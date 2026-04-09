@@ -47,18 +47,19 @@ export function CalendarGrid({
   const today = new Date();
 
   return (
-    <div className="px-3 pb-3 pt-1 md:px-5 md:pb-5" onMouseUp={onDateMouseUp}>
-      {/* Day headers */}
+    <div className="px-2 sm:px-3 pb-2 sm:pb-3 pt-1 md:px-5 md:pb-5" onMouseUp={onDateMouseUp}>
+      {/* Day headers - shorter on mobile */}
       <div className="mb-1 grid grid-cols-7 gap-0">
-        {DAY_HEADERS.map((d, i) => (
+        {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
           <div
-            key={d}
+            key={d + i}
             className={cn(
               "py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-muted-foreground",
               i >= 5 && "text-calendar-weekend"
             )}
           >
-            {d}
+            <span className="sm:hidden">{d}</span>
+            <span className="hidden sm:inline">{DAY_HEADERS[i]}</span>
           </div>
         ))}
       </div>
@@ -80,8 +81,8 @@ export function CalendarGrid({
             <div
               key={day.toISOString()}
               className={cn(
-                "group relative flex flex-col items-center min-h-[44px] md:min-h-[60px] cursor-pointer transition-all duration-150 select-none",
-                "hover:bg-muted/60",
+                "group relative flex flex-col items-center min-h-[48px] sm:min-h-[44px] md:min-h-[60px] cursor-pointer transition-all duration-150 select-none",
+                "hover:bg-muted/60 active:bg-muted/40",
                 !inMonth && "opacity-40",
                 inRange && !isStart && !isEnd && "bg-calendar-range",
                 (isStart || isEnd || isSingleSelected) &&
@@ -98,7 +99,7 @@ export function CalendarGrid({
               {/* Date number */}
               <span
                 className={cn(
-                  "mt-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium md:text-sm transition-colors",
+                  "mt-1 flex h-7 w-7 sm:h-6 sm:w-6 items-center justify-center rounded-full text-sm sm:text-xs font-medium md:text-sm transition-colors",
                   inMonth && weekend && !(isStart || isEnd || isSingleSelected) && "text-calendar-weekend",
                   inMonth && !weekend && !(isStart || isEnd || isSingleSelected) && "text-foreground",
                   (isStart || isEnd || isSingleSelected) && "text-primary-foreground font-bold",
@@ -110,25 +111,25 @@ export function CalendarGrid({
 
               {/* Holiday indicator */}
               {holiday && inMonth && (
-                <span className="absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full bg-calendar-holiday animate-pulse" title={holiday} />
+                <span className="absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full bg-calendar-holiday" title={holiday} />
               )}
 
-              {/* Holiday title text */}
+              {/* Holiday title text - hide on very small screens */}
               {holiday && inMonth && (
-                <span className="mt-0.5 px-1 text-[7px] md:text-[8px] text-center leading-tight text-calendar-holiday font-medium truncate max-w-full animate-fade-in">
-                  {holiday}
+                <span className="hidden sm:block mt-0.5 px-1 text-[7px] md:text-[8px] text-center leading-tight text-calendar-holiday font-medium truncate max-w-full">
+                  {holiday.length > 10 ? holiday.slice(0, 10) + "..." : holiday}
                 </span>
               )}
 
-              {/* Event dots */}
+              {/* Event dots - larger touch targets on mobile */}
               {dayEvents.length > 0 && (
-                <div className="flex gap-0.5 mt-0.5 flex-wrap justify-center max-w-[90%]">
+                <div className="flex gap-1 sm:gap-0.5 mt-1 sm:mt-0.5 flex-wrap justify-center max-w-[90%]">
                   {dayEvents.slice(0, 3).map((ev) => {
                     const colorObj = EVENT_COLORS.find((c) => c.id === ev.color);
                     return (
                       <span
                         key={ev.id}
-                        className="h-1.5 w-1.5 rounded-full shrink-0"
+                        className="h-2 w-2 sm:h-1.5 sm:w-1.5 rounded-full shrink-0"
                         style={{ backgroundColor: colorObj?.dot || "#3b82f6" }}
                         title={ev.title}
                         onClick={(e) => { e.stopPropagation(); onEventClick(ev); }}
@@ -136,7 +137,7 @@ export function CalendarGrid({
                     );
                   })}
                   {dayEvents.length > 3 && (
-                    <span className="text-[8px] text-muted-foreground leading-none">+{dayEvents.length - 3}</span>
+                    <span className="text-[9px] sm:text-[8px] text-muted-foreground leading-none">+{dayEvents.length - 3}</span>
                   )}
                 </div>
               )}

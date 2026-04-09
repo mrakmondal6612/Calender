@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { addMonths } from "date-fns";
 import { useCalendar } from "@/hooks/useCalendar";
 import { useTodos } from "@/hooks/useTodos";
@@ -43,6 +43,59 @@ export function WallCalendar() {
   const [showDayDetail, setShowDayDetail] = useState(false);
   const [selectedDetailDate, setSelectedDetailDate] = useState<Date | null>(null);
   const [rightTab, setRightTab] = useState<"notes" | "todos">("notes");
+  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(null);
+
+  // Touch swipe handling for mobile
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (cal.view === "month") {
+      if (isLeftSwipe) {
+        setSlideDirection("left");
+        cal.goNextMonth();
+      } else if (isRightSwipe) {
+        setSlideDirection("right");
+        cal.goPrevMonth();
+      }
+    } else if (cal.view === "week") {
+      if (isLeftSwipe) {
+        setSlideDirection("left");
+        cal.goToNextWeek();
+      } else if (isRightSwipe) {
+        setSlideDirection("right");
+        cal.goToPrevWeek();
+      }
+    } else if (cal.view === "day") {
+      if (isLeftSwipe) {
+        setSlideDirection("left");
+        cal.goToNextDay();
+      } else if (isRightSwipe) {
+        setSlideDirection("right");
+        cal.goToPrevDay();
+      }
+    }
+
+    // Reset slide direction after animation
+    setTimeout(() => setSlideDirection(null), 300);
+
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
 
   // Ctrl+K for search
   useEffect(() => {
@@ -98,10 +151,15 @@ export function WallCalendar() {
   const miniMonths = [1, 2, 3].map((offset) => addMonths(cal.currentMonth, offset));
 
   return (
-    <div className="w-full max-w-[1400px] mx-auto">
-      <div className="flex flex-col lg:flex-row gap-4">
+    <div className="w-full max-w-[1400px] mx-auto px-2 sm:px-4">
+      <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
         {/* Main calendar card */}
-        <div className="calendar-shadow flex-1 min-w-0 overflow-hidden rounded-lg bg-card">
+        <div 
+          className="calendar-shadow flex-1 min-w-0 overflow-hidden rounded-lg bg-card touch-pan-y"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
           <div className="flex flex-col md:flex-row">
             {/* Left panel */}
             <div className="flex-1 min-w-0">
@@ -130,19 +188,21 @@ export function WallCalendar() {
               />
 
               {cal.view === "month" && (
-                <CalendarGrid
-                  currentMonth={cal.currentMonth}
-                  rangeStart={cal.rangeStart}
-                  rangeEnd={cal.rangeEnd}
-                  events={cal.events}
-                  holidayCountry={settings.holidayCountry}
-                  onDateClick={handleDateClickDetail}
-                  onDateMouseDown={cal.handleDateMouseDown}
-                  onDateMouseEnter={cal.handleDateMouseEnter}
-                  onDateMouseUp={cal.handleDateMouseUp}
-                  onEventClick={handleEventClick}
-                  onAddEvent={handleAddEventForDate}
-                />
+                <div className={slideDirection === "left" ? "animate-slide-left" : slideDirection === "right" ? "animate-slide-right" : ""}>
+                  <CalendarGrid
+                    currentMonth={cal.currentMonth}
+                    rangeStart={cal.rangeStart}
+                    rangeEnd={cal.rangeEnd}
+                    events={cal.events}
+                    holidayCountry={settings.holidayCountry}
+                    onDateClick={handleDateClickDetail}
+                    onDateMouseDown={cal.handleDateMouseDown}
+                    onDateMouseEnter={cal.handleDateMouseEnter}
+                    onDateMouseUp={cal.handleDateMouseUp}
+                    onEventClick={handleEventClick}
+                    onAddEvent={handleAddEventForDate}
+                  />
+                </div>
               )}
 
               {cal.view === "week" && (
@@ -162,16 +222,18 @@ export function WallCalendar() {
             </div>
 
             {/* Right panel: notes / todos */}
-            <div className="w-full md:w-[280px] flex flex-col border-l border-border">
+            <div className="w-full md:w-[280px] flex flex-col border-t md:border-t-0 md:border-l border-border">
               {/* Tab switcher */}
-              <div className="flex border-b border-border">
+              <div className="flex border-b border-border bg-muted/20">
                 <button onClick={() => setRightTab("notes")}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium transition-colors ${rightTab === "notes" ? "text-foreground border-b-2 border-primary" : "text-muted-foreground hover:text-foreground"}`}>
-                  <StickyNote className="h-3 w-3" /> Notes
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-3 sm:py-2.5 text-xs font-medium transition-colors ${rightTab === "notes" ? "text-foreground border-b-2 border-primary bg-card" : "text-muted-foreground hover:text-foreground hover:bg-muted/40"}`}>
+                  <StickyNote className="h-3.5 w-3.5 sm:h-3 sm:w-3" /> 
+                  <span className="hidden xs:inline">Notes</span>
                 </button>
                 <button onClick={() => setRightTab("todos")}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-xs font-medium transition-colors ${rightTab === "todos" ? "text-foreground border-b-2 border-primary" : "text-muted-foreground hover:text-foreground"}`}>
-                  <CheckSquare className="h-3 w-3" /> Tasks
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-3 sm:py-2.5 text-xs font-medium transition-colors ${rightTab === "todos" ? "text-foreground border-b-2 border-primary bg-card" : "text-muted-foreground hover:text-foreground hover:bg-muted/40"}`}>
+                  <CheckSquare className="h-3.5 w-3.5 sm:h-3 sm:w-3" /> 
+                  <span className="hidden xs:inline">Tasks</span>
                   {todoHook.stats.todo + todoHook.stats.inProgress > 0 && (
                     <span className="bg-primary text-primary-foreground text-[9px] rounded-full px-1.5 py-0.5 leading-none">
                       {todoHook.stats.todo + todoHook.stats.inProgress}

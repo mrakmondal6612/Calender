@@ -56,24 +56,24 @@ export function DayDetailModal({
   const totalItems = dayEvents.length + dayTodos.length + dayNotes.length + (holiday ? 1 : 0);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-lg mx-4 max-h-[85vh] overflow-hidden rounded-2xl bg-card border border-border shadow-2xl animate-slide-up">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div className="w-full sm:max-w-lg mx-0 sm:mx-4 max-h-[90vh] sm:max-h-[85vh] overflow-hidden rounded-t-xl sm:rounded-xl bg-card border border-border shadow-2xl">
         {/* Header with Date */}
         <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary/90 to-blue-600 text-primary-foreground">
           {/* Decorative circles */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-16 h-16 sm:w-24 sm:h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
           
-          <div className="relative px-6 py-6">
+          <div className="relative px-4 sm:px-6 py-4 sm:py-6">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-sm font-medium text-primary-foreground/80 uppercase tracking-wider">
+                <p className="text-xs sm:text-sm font-medium text-primary-foreground/80 uppercase tracking-wider">
                   {format(date, "EEEE")}
                 </p>
-                <h2 className="text-4xl font-bold mt-1">
+                <h2 className="text-3xl sm:text-4xl font-bold mt-1">
                   {format(date, "d")}
                 </h2>
-                <p className="text-lg text-primary-foreground/90">
+                <p className="text-base sm:text-lg text-primary-foreground/90">
                   {format(date, "MMMM yyyy")}
                 </p>
               </div>
@@ -89,19 +89,19 @@ export function DayDetailModal({
             
             {/* Holiday Badge */}
             {holiday && (
-              <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm animate-bounce-subtle">
-                <Sparkles className="h-4 w-4" />
-                <span className="text-sm font-medium">{holiday}</span>
+              <div className="mt-3 sm:mt-4 inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/20 backdrop-blur-sm">
+                <Sparkles className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="text-xs sm:text-sm font-medium">{holiday}</span>
               </div>
             )}
           </div>
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(85vh-180px)] p-5 space-y-5">
+        <div className="overflow-y-auto max-h-[calc(90vh-160px)] sm:max-h-[calc(85vh-180px)] p-4 sm:p-5 space-y-4 sm:space-y-5">
           
           {/* Summary Stats */}
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             <StatCard icon={Calendar} count={dayEvents.length} label="Events" color="blue" />
             <StatCard icon={CheckCircle2} count={dayTodos.filter(t => t.status === "completed").length} label="Done" color="green" />
             <StatCard icon={Circle} count={dayTodos.filter(t => t.status !== "completed").length} label="Tasks" color="amber" />
@@ -250,11 +250,11 @@ export function DayDetailModal({
 
           {/* Empty State */}
           {totalItems === 0 && (
-            <div className="text-center py-10">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
-                <Calendar className="h-8 w-8 text-muted-foreground" />
+            <div className="text-center py-8 sm:py-10">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                <Calendar className="h-7 w-7 sm:h-8 sm:w-8 text-muted-foreground" />
               </div>
-              <p className="text-muted-foreground">No events, tasks, or notes for this date</p>
+              <p className="text-sm sm:text-base text-muted-foreground">No events, tasks, or notes for this date</p>
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -269,9 +269,9 @@ export function DayDetailModal({
         </div>
 
         {/* Footer Actions */}
-        <div className="border-t border-border p-4 bg-muted/30 flex gap-2">
+        <div className="border-t border-border p-3 sm:p-4 bg-muted/30 flex gap-2">
           <Button 
-            className="flex-1" 
+            className="flex-1 h-10 sm:h-9" 
             onClick={() => onAddEvent(date)}
           >
             <Calendar className="h-4 w-4 mr-2" />
