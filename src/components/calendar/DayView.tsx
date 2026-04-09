@@ -7,14 +7,15 @@ const HOURS = Array.from({ length: 24 }, (_, i) => i);
 interface DayViewProps {
   currentDate: Date;
   events: CalendarEvent[];
+  holidayCountry?: string;
   onEventClick: (event: CalendarEvent) => void;
   onAddEvent: (date: Date) => void;
 }
 
-export function DayView({ currentDate, events, onEventClick, onAddEvent }: DayViewProps) {
+export function DayView({ currentDate, events, holidayCountry = "us", onEventClick, onAddEvent }: DayViewProps) {
   const today = new Date();
   const isToday = isSameDay(currentDate, today);
-  const holiday = getHoliday(currentDate);
+  const holiday = getHoliday(currentDate, holidayCountry);
   const dayEvents = getEventsForDate(events, currentDate);
   const allDayEvents = dayEvents.filter((e) => e.isAllDay);
   const timedEvents = dayEvents.filter((e) => !e.isAllDay && e.time);

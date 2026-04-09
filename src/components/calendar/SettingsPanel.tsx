@@ -2,6 +2,7 @@ import { X, Sun, Moon, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { CalendarSettings, ThemeMode, TimeFormat, WeekStartDay, HolidayCountry } from "@/lib/calendar-types";
+import { HOLIDAY_COUNTRIES } from "@/lib/calendar-types";
 import { TIMEZONE_OPTIONS } from "@/lib/calendar-types";
 
 interface SettingsPanelProps {
@@ -95,9 +96,9 @@ export function SettingsPanel({ settings, onUpdate, onClose }: SettingsPanelProp
             <label className="text-xs font-medium text-foreground">Holiday Set</label>
             <select value={settings.holidayCountry} onChange={(e) => onUpdate({ holidayCountry: e.target.value as HolidayCountry })}
               className="w-full mt-1.5 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-              <option value="us">United States</option>
-              <option value="uk">United Kingdom</option>
-              <option value="none">None</option>
+              {HOLIDAY_COUNTRIES.map((c) => (
+                <option key={c.id} value={c.id}>{c.flag} {c.label}</option>
+              ))}
             </select>
           </div>
 

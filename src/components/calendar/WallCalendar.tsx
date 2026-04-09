@@ -6,6 +6,8 @@ import { useSettings } from "@/hooks/useSettings";
 import { CalendarHero } from "./CalendarHero";
 import { SpiralBinding } from "./SpiralBinding";
 import { CalendarNav } from "./CalendarNav";
+import { ClockModal } from "./ClockModal";
+import { DayDetailModal } from "./DayDetailModal";
 import { CalendarGrid } from "./CalendarGrid";
 import { WeekView } from "./WeekView";
 import { DayView } from "./DayView";
@@ -20,6 +22,7 @@ import { ExportPanel } from "./ExportPanel";
 import { SettingsPanel } from "./SettingsPanel";
 import { format } from "@/lib/calendar-utils";
 import type { CalendarEvent } from "@/lib/calendar-utils";
+import type { Todo } from "@/lib/calendar-types";
 import { Keyboard, CheckSquare, StickyNote } from "lucide-react";
 import { toast } from "sonner";
 
@@ -36,6 +39,9 @@ export function WallCalendar() {
   const [showSearch, setShowSearch] = useState(false);
   const [showExport, setShowExport] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showClock, setShowClock] = useState(false);
+  const [showDayDetail, setShowDayDetail] = useState(false);
+  const [selectedDetailDate, setSelectedDetailDate] = useState<Date | null>(null);
   const [rightTab, setRightTab] = useState<"notes" | "todos">("notes");
 
   // Ctrl+K for search
@@ -64,10 +70,23 @@ export function WallCalendar() {
     setShowEventModal(true);
   }, []);
 
+  const handleDateClickDetail = useCallback((date: Date) => {
+    setSelectedDetailDate(date);
+    setShowDayDetail(true);
+  }, []);
+
   const handleSaveEvent = useCallback((event: CalendarEvent) => {
     if (editingEvent) { cal.updateEvent(event); toast.success("Event updated"); }
     else { cal.addEvent(event); toast.success("Event created"); }
+    setShowDayDetail(false);
   }, [editingEvent, cal.updateEvent, cal.addEvent]);
+
+  const handleEditTodoFromDetail = useCallback((todo: Todo) => {
+    // Switch to todos tab and scroll to the todo
+    setRightTab("todos");
+    setShowDayDetail(false);
+    toast.info(`Opening todo: ${todo.title}`);
+  }, []);
 
   const onPrev = cal.view === "week" ? cal.goToPrevWeek : cal.view === "day" ? cal.goToPrevDay : cal.goPrevMonth;
   const onNext = cal.view === "week" ? cal.goToNextWeek : cal.view === "day" ? cal.goToNextDay : cal.goNextMonth;
@@ -107,6 +126,7 @@ export function WallCalendar() {
                 onSearch={() => setShowSearch(true)}
                 onExport={() => setShowExport(true)}
                 onSettings={() => setShowSettings(true)}
+                onClock={() => setShowClock(true)}
               />
 
               {cal.view === "month" && (
@@ -115,7 +135,8 @@ export function WallCalendar() {
                   rangeStart={cal.rangeStart}
                   rangeEnd={cal.rangeEnd}
                   events={cal.events}
-                  onDateClick={cal.handleDateClick}
+                  holidayCountry={settings.holidayCountry}
+                  onDateClick={handleDateClickDetail}
                   onDateMouseDown={cal.handleDateMouseDown}
                   onDateMouseEnter={cal.handleDateMouseEnter}
                   onDateMouseUp={cal.handleDateMouseUp}
@@ -125,12 +146,12 @@ export function WallCalendar() {
               )}
 
               {cal.view === "week" && (
-                <WeekView currentDate={cal.currentMonth} events={cal.events}
+                <WeekView currentDate={cal.currentMonth} events={cal.events} holidayCountry={settings.holidayCountry}
                   onEventClick={handleEventClick} onAddEvent={handleAddEventForDate} />
               )}
 
               {cal.view === "day" && (
-                <DayView currentDate={cal.currentMonth} events={cal.events}
+                <DayView currentDate={cal.currentMonth} events={cal.events} holidayCountry={settings.holidayCountry}
                   onEventClick={handleEventClick} onAddEvent={handleAddEventForDate} />
               )}
 
@@ -240,6 +261,21 @@ export function WallCalendar() {
       {showSearch && <SearchPanel events={cal.events} todos={todoHook.todos} onEventClick={handleEventClick} onTodoClick={() => { setRightTab("todos"); }} onClose={() => setShowSearch(false)} />}
       {showExport && <ExportPanel events={cal.events} todos={todoHook.todos} onClose={() => setShowExport(false)} />}
       {showSettings && <SettingsPanel settings={settings} onUpdate={updateSettings} onClose={() => setShowSettings(false)} />}
+      {showClock && <ClockModal isOpen={showClock} onClose={() => setShowClock(false)} />}
+      {showDayDetail && (
+        <DayDetailModal
+          isOpen={showDayDetail}
+          onClose={() => setShowDayDetail(false)}
+          date={selectedDetailDate}
+          events={cal.events}
+          todos={todoHook.todos}
+          notes={cal.currentNotes}
+          holidayCountry={settings.holidayCountry}
+          onAddEvent={handleAddEventForDate}
+          onEditEvent={handleEventClick}
+          onEditTodo={handleEditTodoFromDetail}
+        />
+      )}
     </div>
   );
 }

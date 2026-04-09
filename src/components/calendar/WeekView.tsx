@@ -15,11 +15,12 @@ const HOURS = Array.from({ length: 16 }, (_, i) => i + 6); // 6 AM to 9 PM
 interface WeekViewProps {
   currentDate: Date;
   events: CalendarEvent[];
+  holidayCountry?: string;
   onEventClick: (event: CalendarEvent) => void;
   onAddEvent: (date: Date) => void;
 }
 
-export function WeekView({ currentDate, events, onEventClick, onAddEvent }: WeekViewProps) {
+export function WeekView({ currentDate, events, holidayCountry = "us", onEventClick, onAddEvent }: WeekViewProps) {
   const days = getWeekDays(currentDate);
   const today = new Date();
 
@@ -30,7 +31,7 @@ export function WeekView({ currentDate, events, onEventClick, onAddEvent }: Week
         <div className="p-2" />
         {days.map((day) => {
           const isToday = isSameDay(day, today);
-          const holiday = getHoliday(day);
+          const holiday = getHoliday(day, holidayCountry);
           return (
             <div
               key={day.toISOString()}

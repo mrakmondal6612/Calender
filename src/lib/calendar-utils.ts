@@ -79,7 +79,8 @@ export type CalendarEvent = {
 
 export type CalendarView = "month" | "week" | "day" | "agenda";
 
-export const HOLIDAYS: Record<string, string> = {
+// Country-specific holidays
+export const US_HOLIDAYS: Record<string, string> = {
   "01-01": "New Year's Day",
   "01-15": "Martin Luther King Jr. Day",
   "02-14": "Valentine's Day",
@@ -97,6 +98,164 @@ export const HOLIDAYS: Record<string, string> = {
   "12-25": "Christmas Day",
   "12-31": "New Year's Eve",
 };
+
+export const UK_HOLIDAYS: Record<string, string> = {
+  "01-01": "New Year's Day",
+  "02-14": "Valentine's Day",
+  "03-17": "St. Patrick's Day",
+  "04-01": "April Fools' Day",
+  "04-18": "Good Friday",
+  "04-21": "Easter Monday",
+  "05-05": "Early May Bank Holiday",
+  "05-26": "Spring Bank Holiday",
+  "08-25": "Summer Bank Holiday",
+  "10-31": "Halloween",
+  "12-25": "Christmas Day",
+  "12-26": "Boxing Day",
+  "12-31": "New Year's Eve",
+};
+
+export const INDIA_HOLIDAYS: Record<string, string> = {
+  "01-01": "New Year's Day",
+  "01-26": "Republic Day",
+  "02-14": "Valentine's Day",
+  "03-08": "Holi",
+  "03-25": "Good Friday",
+  "04-01": "April Fools' Day",
+  "04-14": "Dr. Ambedkar Jayanti",
+  "05-01": "Labour Day",
+  "06-29": "Eid al-Adha (Bakrid)",
+  "08-15": "Independence Day",
+  "08-19": "Raksha Bandhan",
+  "08-28": "Janmashtami",
+  "09-02": "Ganesh Chaturthi",
+  "09-16": "Eid-e-Milad",
+  "10-02": "Gandhi Jayanti",
+  "10-10": "Dussehra",
+  "10-31": "Halloween",
+  "11-01": "Diwali",
+  "12-25": "Christmas Day",
+  "12-31": "New Year's Eve",
+};
+
+export const CANADA_HOLIDAYS: Record<string, string> = {
+  "01-01": "New Year's Day",
+  "02-14": "Valentine's Day",
+  "02-17": "Family Day",
+  "03-17": "St. Patrick's Day",
+  "04-01": "April Fools' Day",
+  "04-18": "Good Friday",
+  "05-19": "Victoria Day",
+  "07-01": "Canada Day",
+  "08-04": "Civic Holiday",
+  "09-01": "Labour Day",
+  "10-13": "Thanksgiving",
+  "10-31": "Halloween",
+  "11-11": "Remembrance Day",
+  "12-25": "Christmas Day",
+  "12-26": "Boxing Day",
+  "12-31": "New Year's Eve",
+};
+
+export const AUSTRALIA_HOLIDAYS: Record<string, string> = {
+  "01-01": "New Year's Day",
+  "01-26": "Australia Day",
+  "02-14": "Valentine's Day",
+  "03-17": "St. Patrick's Day",
+  "04-01": "April Fools' Day",
+  "04-18": "Good Friday",
+  "04-21": "Easter Monday",
+  "04-25": "Anzac Day",
+  "06-09": "Queen's Birthday",
+  "10-31": "Halloween",
+  "12-25": "Christmas Day",
+  "12-26": "Boxing Day",
+  "12-31": "New Year's Eve",
+};
+
+export const GERMANY_HOLIDAYS: Record<string, string> = {
+  "01-01": "New Year's Day",
+  "02-14": "Valentine's Day",
+  "03-17": "St. Patrick's Day",
+  "04-01": "April Fools' Day",
+  "04-18": "Good Friday",
+  "04-21": "Easter Monday",
+  "05-01": "Labour Day",
+  "05-29": "Ascension Day",
+  "06-09": "Whit Monday",
+  "10-03": "German Unity Day",
+  "10-31": "Halloween",
+  "12-25": "Christmas Day",
+  "12-26": "Second Day of Christmas",
+  "12-31": "New Year's Eve",
+};
+
+export const FRANCE_HOLIDAYS: Record<string, string> = {
+  "01-01": "New Year's Day",
+  "02-14": "Valentine's Day",
+  "03-17": "St. Patrick's Day",
+  "04-01": "April Fools' Day",
+  "04-18": "Good Friday",
+  "04-21": "Easter Monday",
+  "05-01": "Labour Day",
+  "05-08": "Victory in Europe Day",
+  "05-29": "Ascension Day",
+  "06-09": "Whit Monday",
+  "07-14": "Bastille Day",
+  "08-15": "Assumption of Mary",
+  "10-31": "Halloween",
+  "11-01": "All Saints' Day",
+  "11-11": "Armistice Day",
+  "12-25": "Christmas Day",
+  "12-31": "New Year's Eve",
+};
+
+export const BANGLADESH_HOLIDAYS: Record<string, string> = {
+  "01-01": "New Year's Day",
+  "02-14": "Valentine's Day",
+  "02-21": "Language Martyrs' Day",
+  "03-17": "Birthday of Bangabandhu",
+  "03-26": "Independence Day",
+  "04-01": "April Fools' Day",
+  "04-14": "Pohela Boishakh",
+  "05-01": "Labour Day",
+  "08-15": "National Mourning Day",
+  "10-31": "Halloween",
+  "12-16": "Victory Day",
+  "12-25": "Christmas Day",
+  "12-31": "New Year's Eve",
+};
+
+export const PAKISTAN_HOLIDAYS: Record<string, string> = {
+  "01-01": "New Year's Day",
+  "02-14": "Valentine's Day",
+  "03-23": "Pakistan Day",
+  "04-01": "April Fools' Day",
+  "05-01": "Labour Day",
+  "08-14": "Independence Day",
+  "09-06": "Defence Day",
+  "10-31": "Halloween",
+  "11-09": "Iqbal Day",
+  "12-25": "Christmas Day",
+  "12-31": "New Year's Eve",
+};
+
+// Map of all holidays by country
+export const ALL_HOLIDAYS: Record<string, Record<string, string>> = {
+  us: US_HOLIDAYS,
+  uk: UK_HOLIDAYS,
+  in: INDIA_HOLIDAYS,
+  ca: CANADA_HOLIDAYS,
+  au: AUSTRALIA_HOLIDAYS,
+  de: GERMANY_HOLIDAYS,
+  fr: FRANCE_HOLIDAYS,
+  bd: BANGLADESH_HOLIDAYS,
+  pk: PAKISTAN_HOLIDAYS,
+  none: {},
+};
+
+// Legacy export for backward compatibility
+export const HOLIDAYS = US_HOLIDAYS;
 
 export type NoteEntry = {
   id: string;
@@ -118,9 +277,10 @@ export function getWeekDays(date: Date) {
   return eachDayOfInterval({ start: weekStart, end: weekEnd });
 }
 
-export function getHoliday(date: Date): string | undefined {
+export function getHoliday(date: Date, country: string = "us"): string | undefined {
   const key = format(date, "MM-dd");
-  return HOLIDAYS[key];
+  const countryHolidays = ALL_HOLIDAYS[country] || ALL_HOLIDAYS["us"];
+  return countryHolidays[key];
 }
 
 export function isInRange(date: Date, rangeStart: Date | null, rangeEnd: Date | null): boolean {

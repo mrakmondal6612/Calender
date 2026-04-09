@@ -17,7 +17,7 @@ const views: { id: CalendarView; label: string; icon: typeof CalendarDays; key: 
 
 export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
   return (
-    <div className="flex items-center rounded-lg border border-border p-0.5 bg-muted/40">
+    <div className="flex items-center rounded-lg border border-border p-0.5 bg-muted/40 hover:border-primary/30 transition-colors duration-200">
       {views.map((v) => (
         <Button
           key={v.id}
@@ -25,14 +25,14 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
           size="sm"
           onClick={() => onViewChange(v.id)}
           className={cn(
-            "h-7 gap-1 px-2 text-[10px] font-medium rounded-md",
+            "h-7 gap-1 px-2 text-[10px] font-medium rounded-md transition-all duration-200",
             view === v.id
-              ? "bg-card text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
+              ? "bg-gradient-to-br from-card to-primary/5 text-foreground shadow-sm scale-105"
+              : "text-muted-foreground hover:text-foreground hover:scale-105 hover:bg-muted/60"
           )}
           title={`${v.label} (${v.key})`}
         >
-          <v.icon className="h-3 w-3" />
+          <v.icon className={cn("h-3 w-3 transition-transform duration-200", view === v.id && "scale-110")} />
           <span className="hidden sm:inline">{v.label}</span>
         </Button>
       ))}

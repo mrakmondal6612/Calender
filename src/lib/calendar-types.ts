@@ -52,7 +52,20 @@ export type TimeFormat = "12h" | "24h";
 export type WeekStartDay = 0 | 1; // 0=Sunday, 1=Monday
 export type ThemeMode = "light" | "dark" | "system";
 
-export type HolidayCountry = "us" | "uk" | "none";
+export type HolidayCountry = "us" | "uk" | "in" | "ca" | "au" | "de" | "fr" | "bd" | "pk" | "none";
+
+export const HOLIDAY_COUNTRIES: { id: HolidayCountry; label: string; flag: string }[] = [
+  { id: "us", label: "United States", flag: "🇺🇸" },
+  { id: "uk", label: "United Kingdom", flag: "🇬🇧" },
+  { id: "in", label: "India", flag: "🇮🇳" },
+  { id: "ca", label: "Canada", flag: "🇨🇦" },
+  { id: "au", label: "Australia", flag: "🇦🇺" },
+  { id: "de", label: "Germany", flag: "🇩🇪" },
+  { id: "fr", label: "France", flag: "🇫🇷" },
+  { id: "bd", label: "Bangladesh", flag: "🇧🇩" },
+  { id: "pk", label: "Pakistan", flag: "🇵🇰" },
+  { id: "none", label: "None", flag: "" },
+];
 
 export const TIMEZONE_OPTIONS = [
   "America/New_York", "America/Chicago", "America/Denver", "America/Los_Angeles",

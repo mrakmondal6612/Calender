@@ -21,6 +21,7 @@ interface CalendarGridProps {
   rangeStart: Date | null;
   rangeEnd: Date | null;
   events: CalendarEvent[];
+  holidayCountry?: string;
   onDateClick: (date: Date) => void;
   onDateMouseDown: (date: Date) => void;
   onDateMouseEnter: (date: Date) => void;
@@ -34,6 +35,7 @@ export function CalendarGrid({
   rangeStart,
   rangeEnd,
   events,
+  holidayCountry = "us",
   onDateClick,
   onDateMouseDown,
   onDateMouseEnter,
@@ -71,7 +73,7 @@ export function CalendarGrid({
           const isStart = isRangeStart(day, rangeStart, rangeEnd);
           const isEnd = isRangeEnd(day, rangeStart, rangeEnd);
           const isSingleSelected = rangeStart && !rangeEnd && isSameDay(day, rangeStart);
-          const holiday = getHoliday(day);
+          const holiday = getHoliday(day, holidayCountry);
           const dayEvents = getEventsForDate(events, day);
 
           return (
@@ -108,7 +110,14 @@ export function CalendarGrid({
 
               {/* Holiday indicator */}
               {holiday && inMonth && (
-                <span className="absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full bg-calendar-holiday" title={holiday} />
+                <span className="absolute top-0.5 right-0.5 h-1.5 w-1.5 rounded-full bg-calendar-holiday animate-pulse" title={holiday} />
+              )}
+
+              {/* Holiday title text */}
+              {holiday && inMonth && (
+                <span className="mt-0.5 px-1 text-[7px] md:text-[8px] text-center leading-tight text-calendar-holiday font-medium truncate max-w-full animate-fade-in">
+                  {holiday}
+                </span>
               )}
 
               {/* Event dots */}
